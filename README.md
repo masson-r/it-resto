@@ -1,4 +1,4 @@
 it-resto
 ========
 
-Projet de sélection de restaurant par une petite communaute de personnes
+Projet de sélection d'un restaurant par une petite communaute de personnes
