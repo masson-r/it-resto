@@ -38,13 +38,15 @@ class EventController {
     	if (params.login != null) {
     		def user = User.findByLogin(params.login)
 
-    		if (user.password == params.password) {
-    			session.user = user.login
-                session.userAdmin = user.admin
-                session.userLastName = user.lastName
-                session.userName = user.name
-    			redirect(controller: "Event", action: "listEvent")
-    		} 
+            if (user != null) {
+        		if (user.password == params.password) {
+        			session.user = user.login
+                    session.userAdmin = user.admin
+                    session.userLastName = user.lastName
+                    session.userName = user.name
+        			redirect(controller: "Event", action: "listEvent")
+        		} 
+            }
     	}
   		[login: false, message: 'Login ou mot de passe incorrect']
     }
@@ -56,9 +58,14 @@ class EventController {
 
     def createEvent() { 
     	if (params.name != null) {
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm", Locale.FRENCH)
-    		def event = new Event(name: params.name, eventDate:df.parse(params.dateEvent), owner:User.findByLogin(session.user)).save()
-            redirect(controller: "Event", action: "listEvent")
+            try {
+                DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm", Locale.FRENCH)
+        		def event = new Event(name: params.name, eventDate:df.parse(params.dateEvent), owner:User.findByLogin(session.user)).save()
+                redirect(controller: "Event", action: "listEvent")
+            } catch (java.text.ParseException pexp) {
+                // si la date est mal saisie
+                [create: false]
+            }
     	}
     	else {
   	    	[create: false]
